@@ -53,10 +53,20 @@ variable "cidr_blocks" {
   description = "CIDR for sg"
 }
 
+variable "vpc_cidr" {
+  default     = "10.0.0.0/16"
+  description = "CIDR for vpc"
+}
+
 variable "sg_name" {
-  default     = "rds_sg"
+  default     = "default_sg"
   description = "Tag Name for sg"
 }
+variable "sg_postgres" {
+  default     = "postgres_sg"
+  description = "Tag Name for sg"
+}
+
 variable "subnet_1_cidr" {
   default     = "10.0.1.0/24"
   description = " first AZ"

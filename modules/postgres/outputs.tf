@@ -9,3 +9,6 @@ output "db_instance_id" {
 output "db_instance_address" {
   value = "${aws_db_instance.default.address}"
 }
+output "aws_security_group" {
+  value = "${aws_security_group.default.id}"
+}

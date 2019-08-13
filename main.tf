@@ -7,12 +7,15 @@ provider "aws" {
 # DB
 #####
 
-module "aws-postgress-rds" {
-  source = "./modules/aws-postgress-rds"
+module "postgres" {
+  source = "./modules/postgres"
   identifier             = "gfg-rds"
   engine                 = "postgres"
   instance_class         = "db.t2.micro"
   username               = "gfguser"
   password               = "dbpassword"
 }
+module "ec2" {
+  source = "./modules/ec2/"
 
+}
