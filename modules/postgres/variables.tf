@@ -1,89 +1,50 @@
-variable "identifier" {
-  default     = "mydb-rds"
+variable "IDENTIFIER" {
+  default     = "gfgdb-rds"
   description = "Identifier for DB"
 }
 
-variable "allocated_storage" {
+variable "ALLOCATED_STORAGE" {
   default     = "20"
-  description = "Storage size in GB"
+  description = "allocated_storage size in GB"
 }
 
-variable "engine" {
+variable "ENGINE" {
   default     = "postgres"
   description = "Engine type"
 }
 
-variable "engine_version" {
+variable "ENGINE_VERSION" {
   description = "Engine version"
 
   default = {
-   postgres =  "9.6.8"
-}
+    postgres = "9.6.8"
+  }
 }
 
-variable "instance_class" {
+variable "INSTANCE_CLASS" {
   default     = "db.t2.micro"
   description = "Instance class"
 }
 
-variable "db_name" {
-  default     = "mydb"
+variable "DB_NAME" {
+  default     = "gfgdb"
   description = "db name"
 }
 
-variable "username" {
-  default     = "myuser"
+variable "DB_USERNAME" {
+  default     = "gfguser"
   description = "User name"
 }
 
-variable "password" {
+variable "DB_PASSWORD" {
   description = "password"
   default     = "password123"
 }
-variable "project" {
-  description = "project name"
-  default     = "gfg-app"
-}
-#variable "vpc_id" {
-#  description = "Your VPC ID"
-#  default     = "${aws_vpc.rds.id}"
-#}
-variable "cidr_blocks" {
-  default     = "0.0.0.0/0"
-  description = "CIDR for sg"
+
+variable "DB_SG_ID" {
+  description = "postgres security group id"
 }
 
-variable "vpc_cidr" {
-  default     = "10.0.0.0/16"
-  description = "CIDR for vpc"
+variable "DB_SUBNET_ID" {
+  description = "postgress group subnet id "
 }
-
-variable "sg_name" {
-  default     = "default_sg"
-  description = "Tag Name for sg"
-}
-variable "sg_postgres" {
-  default     = "postgres_sg"
-  description = "Tag Name for sg"
-}
-
-variable "subnet_1_cidr" {
-  default     = "10.0.1.0/24"
-  description = " first AZ"
-}
-
-variable "subnet_2_cidr" {
-  default     = "10.0.2.0/24"
-  description = "second AZ"
-}
-
-variable "az_1" {
-  default     = "us-west-1b"
-  description = "first Az"
-}
-
-variable "az_2" {
-  default     = "us-west-1a"
-  description = "second Az2"
-}
-

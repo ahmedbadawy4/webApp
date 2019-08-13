@@ -1,5 +1,20 @@
-resource "aws_vpc" "rds" {
-  cidr_block = "10.0.0.0/16"
+resource "aws_vpc" "main" {
+  cidr_block           = "${var.VPC_CIDR}"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  tags = {
+    Name = "main"
+  }
+}
+resource "aws_route" "internet_access" {
+  route_table_id         = "${aws_vpc.main.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.gw.id}"
 }
 
 resource "aws_db_subnet_group" "default" {
@@ -8,16 +23,34 @@ resource "aws_db_subnet_group" "default" {
   subnet_ids  = ["${aws_subnet.subnet_1.id}", "${aws_subnet.subnet_2.id}"]
 }
 
-resource "aws_security_group" "default" {
-  name        = "main_rds_sg"
-  description = "Allow all inbound traffic"
-  vpc_id      = "${aws_vpc.rds.id}"
+resource "aws_subnet" "subnet_1" {
+  vpc_id            = "${aws_vpc.main.id}"
+  cidr_block        = "${var.SUBNET_1_CIDR}"
+  availability_zone = "${var.AZ_1}"
+
+  tags = {
+    Name = "subnet1"
+  }
+}
+
+resource "aws_subnet" "subnet_2" {
+  vpc_id            = "${aws_vpc.main.id}"
+  cidr_block        = "${var.SUBNET_2_CIDR}"
+  availability_zone = "${var.AZ_2}"
+
+  tags = {
+    Name = "subnet2"
+  }
+}
+
+resource "aws_security_group" "postgres" {
+  name   = "postgres_rds_sg"
+  vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "TCP"
-#    cidr_blocks = ["${var.cidr_blocks}"]
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.VPC_CIDR}"]
   }
 
   egress {
@@ -28,32 +61,43 @@ resource "aws_security_group" "default" {
   }
 
   tags = {
-    Name = "${var.sg_name}"
-  }
-}
-resource "aws_subnet" "subnet_1" {
-  vpc_id            = "${aws_vpc.rds.id}"
-  cidr_block        = "${var.subnet_1_cidr}"
-  availability_zone = "${var.az_1}"
-
-  tags = {
-    Name = "main_subnet1"
+    Name = "postgres"
   }
 }
 
-resource "aws_subnet" "subnet_2" {
-  vpc_id            = "${aws_vpc.rds.id}"
-  cidr_block        = "${var.subnet_2_cidr}"
-  availability_zone = "${var.az_2}"
-
-  tags = {
-    Name = "main_subnet2"
-  }
-}
-resource "aws_internet_gateway" "gw" {
+resource "aws_security_group" "ec2" {
+  name   = "ec2_sg"
   vpc_id = "${aws_vpc.main.id}"
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = ["${var.VPC_CIDR}"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   tags = {
-    Name = "main"
+    Name = "ec2"
   }
 }
