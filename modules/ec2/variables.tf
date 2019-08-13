@@ -10,10 +10,11 @@ variable "VOLUME_SIZE" {
   description = "root volume size"
 }
 
-variable "EC2_SUBNET_ID" {
+variable "EC2_SUBNET" {
   description = "subnet id come from vpc module"
+  type        = "string"
 }
 
-variable "EC2_SG_ID" {
+variable "EC2_SG" {
   description = "security group ID come from vpc module"
 }

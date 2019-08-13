@@ -18,8 +18,8 @@ resource "aws_instance" "amazone_ec2" {
   ami                    = "${data.aws_ami.amazon-linux-2.id}"
   instance_type          = "${var.INSTANCE_TYPE}"
   key_name               = "${var.KEY_NAME}"
-  subnet_id              = "${var.EC2_SUBNET_ID}"
-  vpc_security_group_ids = ["${var.EC2_SG_ID}"]
+  subnet_id              = ["${var.EC2_SUBNET}"]
+  vpc_security_group_ids = ["${var.EC2_SG}"]
   root_block_device {
     volume_size           = "${var.VOLUME_SIZE}"
     delete_on_termination = "true"

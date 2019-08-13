@@ -14,3 +14,6 @@ output "sg_postgres_id" {
 output "default_subnet_group_id" {
   value = "${aws_db_subnet_group.default.id}"
 }
+output "subnet1_id" {
+  value = "${aws_subnet.subnet_1.id}"
+}

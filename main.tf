@@ -26,6 +26,6 @@ module "ec2" {
   INSTANCE_TYPE = "t2.micro"
   KEY_NAME      = "aws"
   VOLUME_SIZE   = "16"
-  EC2_SUBNET_ID = "${module.vpc.main_subnet1_id}"
-  EC2_SG_ID     = ["${module.vpc.sg_ec2_id}"]
+  EC2_SUBNET    = ["${module.vpc.subnet1_id}"]
+  EC2_SG = ["${module.vpc.sg_ec2_id}"]
 }
