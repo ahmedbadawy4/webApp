@@ -27,6 +27,8 @@ resource "aws_subnet" "subnet_1" {
   vpc_id            = "${aws_vpc.main.id}"
   cidr_block        = "${var.SUBNET_1_CIDR}"
   availability_zone = "${var.AZ_1}"
+  #  associate_public_ip_address = "true"
+  map_public_ip_on_launch = "true"
 
   tags = {
     Name = "subnet1"
@@ -37,6 +39,8 @@ resource "aws_subnet" "subnet_2" {
   vpc_id            = "${aws_vpc.main.id}"
   cidr_block        = "${var.SUBNET_2_CIDR}"
   availability_zone = "${var.AZ_2}"
+  #  associate_public_ip_address = "true"
+  map_public_ip_on_launch = "true"
 
   tags = {
     Name = "subnet2"
