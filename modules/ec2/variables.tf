@@ -18,3 +18,8 @@ variable "EC2_SUBNET" {
 variable "EC2_SG" {
   description = "security group ID come from vpc module"
 }
+
+variable "EC2ROLE_NAME" {
+  description = "role name"
+}
+

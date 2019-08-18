@@ -28,4 +28,10 @@ module "ec2" {
   VOLUME_SIZE   = "16"
   EC2_SUBNET    = "${module.vpc.subnet1_id}"
   EC2_SG        = "${module.vpc.sg_ec2_id}"
+  EC2ROLE_NAME  = "${module.secret.ec2role_name}"
+
+}
+
+module "secret" {
+  source = "./modules/secrets/"
 }
