@@ -28,10 +28,11 @@ module "ec2" {
   VOLUME_SIZE   = "16"
   EC2_SUBNET    = "${module.vpc.subnet1_id}"
   EC2_SG        = "${module.vpc.sg_ec2_id}"
-  EC2ROLE_NAME  = "${module.secret.ec2role_name}"
+  ALLOW_EC2_ROLE_NAME  = "${module.secret.allow_ec2_role_name}"
 
 }
 
 module "secret" {
   source = "./modules/secrets/"
+  DB_PASSWORD = "${module.postgres.db_password}"
 }

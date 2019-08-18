@@ -1,23 +1,25 @@
-resource "aws_kms_key" "rds" {
-  description             = "KMS key for rds"
-  deletion_window_in_days = 30
+resource "aws_kms_key" "rds_kms" {
+  name                    = "${var.KMS_NAME}"
+  description             = "KMS key to encyrept rds master password"
+  enable_key_rotation     = "true"
 }
-resource "aws_kms_alias" "rds" {
-  name          = "alias/rds-key-alias"
-  target_key_id = "${aws_kms_key.rds.key_id}"
+resource "aws_kms_alias" "rds_alias_kms" {
+  name          = "${var.KMS_ALIAS_NAME}"
+  target_key_id = "${aws_kms_key.rds_kms.key_id}"
 }
 
-resource "aws_ssm_parameter" "dbpassword" {
-  name        = "dbpassword"
-  description = "RDS secret"
+resource "aws_ssm_parameter" "pg_password" {
+  name        = "${var.ENVIRONMENT}/pg_password"
+  description = "adding postgress password in parameter store"
   type        = "SecureString"
-  value       = "dbpasswd"
-  key_id      = "${aws_kms_key.rds.key_id}"
+  value       = "${var.DB_PASSWORD}"
+  key_id      = "${aws_kms_key.rds_kms.key_id}"
 }
 
 
-resource "aws_iam_policy" "SSMReadOnlyAccess" {
-  name   = "gfgssmReadOnlyAccess"
+resource "aws_iam_policy" "SSMRead" {
+  name   = "ssmReadOnly"
+  description = "Allow get, describe and list parameters store"
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -25,7 +27,9 @@ resource "aws_iam_policy" "SSMReadOnlyAccess" {
         {
             "Effect": "Allow",
             "Action": [
-                "ssm:*"
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*"
             ],
             "Resource": "*"
         }
@@ -34,10 +38,9 @@ resource "aws_iam_policy" "SSMReadOnlyAccess" {
 EOF
 }
 
-resource "aws_iam_policy" "policy" {
-  name        = "ec2policy"
-  description = "IAM policy to allow encrypt and decrept"
-
+resource "aws_iam_policy" "kmsEncryptDecrept" {
+  name        = "kmsEncryptDecrept"
+  description = "Allow encrypt and decrept on rds_kms"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -47,14 +50,14 @@ resource "aws_iam_policy" "policy" {
         "kms:Encrypt"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_kms_key.rds.arn}"
+      "Resource": "${aws_kms_key.rds_kms.arn}"
     }
   ]}
 EOF
 }
 
-resource "aws_iam_role" "rds" {
-  name               = "ec2role"
+resource "aws_iam_role" "allow_ec2_role" {
+  name               = "AllowEc2Role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -70,17 +73,14 @@ resource "aws_iam_role" "rds" {
   ]
 }
 EOF
-  tags = {
-    tag-key = "ec2_role"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "policy1Attachment" {
-  role       = "${aws_iam_role.rds.name}"
-  policy_arn = "${aws_iam_policy.policy.arn}"
+  role       = "${aws_iam_role.allow_ec2_role.name}"
+  policy_arn = "${aws_iam_policy.SSMRead.arn}"
 }
 resource "aws_iam_role_policy_attachment" "policy2Attachment" {
-  role       = "${aws_iam_role.rds.name}"
-  policy_arn = "${aws_iam_policy.SSMReadOnlyAccess.arn}"
+  role       = "${aws_iam_role.allow_ec2_role.name}"
+  policy_arn = "${aws_iam_policy.kmsEncryptDecrept.arn}"
 }
 

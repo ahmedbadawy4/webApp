@@ -38,3 +38,4 @@ resource "aws_instance" "amazone_ec2" {
     Name = "ec2"
   }
 }
+

@@ -1,51 +1,73 @@
-# terraform-gfg
-# Terraform Exercise
+# Terraform Exercise 
 
-We want to see a basic web application displaying content from a database. This can be as simple as a 'Hello World'.
 
-## Repository and Coding Standard
+### Hello world App with Ec2 and PostgreSQL on AWS
 
-You have two weeks time to complete this exercise and can create as many PRs as you want. I will review every PR and give you feedback
-if you want. You will run the terraform code in your own AWS account and we will reimburse you with 25$ as soon as possible that you don't have any extra costs because of the exercise.
+- Terraform infrastructure code to provision fully operated environment consists of EC2 act as an application and PostgreSQL database 
+- The all components are in the same vpc with no public access for the database except from and to Ec2 private subnet and Ec2 is only public accessible on 80 and 22 from anywhere.  
 
-It's very important for us to have a good code style, so please run `terraform fmt -recursive` in the top level directory to format your terraform
-code according to the HashiCorp standards.
+- The code made consists of a modules to easily reuse it 
 
-*Basics:*
+- the secrets and password can be managed by kms and parameter store.
 
-- Create a new repository on GitHub and work in a `development` branch
-- Run `terraform fmt` before you submit a PR
-- Create a new VPC and setup all the dependencies to get a module which we can try out on our side
-- Create a terraform module and make it configurable where you think it makes sense, but provide defaults
-- Provide an environment where you run your module and provide non-secrect variables
+- EC2 has only Read only access to this parameters and kms encryption and decryption 
 
-## Components overview
 
-### KMS Key
+## Usage
 
-- Create a KMS key and alias to encrypt the secret for RDS
-- Adjust the policy to allow the EC2 instance to access it later on
+1- install [terraform](https://terraform.io/downloads.html).
 
-### RDS Database
+2- install [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html).
 
-- Create a PostgreSQL database (db.t2.micro)
-- Engine version of your choice
-- 20GB Storage
-- No backups
-- Have terraform create a secure password without special characters and store it as an encrypted secret in the EC2 parameter store (Hint: Have a look at the terraform provider list)
-- Make the database publicly available, but assign a security group which only allows the security group itself and the EC2 instance you will create later
+3- [Set up your AWS account](https://blog.gruntwork.io/an-introduction-to-terraform-f17df9c6d180#a9b0).
 
-### EC2 instance
+4- create keypair for example `[ec2_key.pem]` to make Ec2 accessable. 
+ `notes: it should be in the same region where we will create our environment`
 
-- Create a key pair to login to the instance via SSH
-- Create an IAM instance role with `arn:aws:iam::aws:policy/ReadOnlyAccess` to be able to pull the secret from the EC2 parameter store
-- Create an EC2 instance (t2.micro) with a 16GB root block device
-- Use the Amazon-Linux 2 AMI
-- Create a security group which opens Port 80 and 22 to 0.0.0.0 to be able to access your instance from outside
-- Deploy a web application in any language you prefer and fetch content from a table of the RDS instance, bonus points for using Ansible to do the deploy
-- Fetch the database password from the EC2 parameter store once and store for further use via the AWS cli (Preinstalled): `aws ssm get-parameter <parameter-name> --with-decryption`
+5- setup your local machine to access your AWS account:
+```
+ aws configure 
 
-### Modifications
+# and answer to the questions by the the key and secret ID and default region 
 
-If you don't want to use an EC2 instance, the use of ECS, Fargate or Lambda Functions with an API Gateway is perfectly fine, too. We're already using terraform 0.12, so doing the exercise
-in the new syntax would be tremendous plus. As a hint: IntelliJ in the community version + the terraform plugin is a huge help 
+```
+6- provision the environment
+```
+ # clone the github repository 
+ git clone https://github.com/ahmedbadawy4/gfg-webApp.git)
+ cd gfg-webApp
+     # edit your variables in main.tf
+ terraform init
+ terraform plan  
+     # check the what will changed or created on your environment 
+ terraform Apply 
+     # reply with yes if everything is ok
+```
+7- get ec2 public ip from the outputs
+ 
+```
+terraform output Ec2_public_ip # to get Ec2 public IP
+
+```
+
+7- Get the master database password 
+
+```
+# Assume region is us West (N. California), we need to list all parameters 
+
+aws ssm describe-parameters --region "us-west-1"
+
+aws ssm get-parameter --name "<parameter_name>" --region "us-west-1" --with-decryption
+
+# the "Value": "<database_password>"
+```
+
+8- connect to the database
+
+```
+psql --host=<databasehost> --port=5432 --username=<database_user> --password --dbname=<database_name>
+
+```
+
+## TO Do List:
+add an application on our Ec2 to can retrieve and write data to or from our database.
