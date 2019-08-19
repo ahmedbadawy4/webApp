@@ -1,7 +1,5 @@
 resource "aws_kms_key" "rds_kms" {
-  name                    = "${var.KMS_NAME}"
-  description             = "KMS key to encyrept rds master password"
-  enable_key_rotation     = "true"
+  description         = "KMS key to encyrept rds master password"
 }
 resource "aws_kms_alias" "rds_alias_kms" {
   name          = "${var.KMS_ALIAS_NAME}"
@@ -9,7 +7,7 @@ resource "aws_kms_alias" "rds_alias_kms" {
 }
 
 resource "aws_ssm_parameter" "pg_password" {
-  name        = "${var.ENVIRONMENT}/pg_password"
+  name        = "pg_password"
   description = "adding postgress password in parameter store"
   type        = "SecureString"
   value       = "${var.DB_PASSWORD}"
@@ -18,9 +16,9 @@ resource "aws_ssm_parameter" "pg_password" {
 
 
 resource "aws_iam_policy" "SSMRead" {
-  name   = "ssmReadOnly"
+  name        = "ssmReadOnly"
   description = "Allow get, describe and list parameters store"
-  policy = <<EOF
+  policy      = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -41,7 +39,7 @@ EOF
 resource "aws_iam_policy" "kmsEncryptDecrept" {
   name        = "kmsEncryptDecrept"
   description = "Allow encrypt and decrept on rds_kms"
-  policy = <<EOF
+  policy      = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [{

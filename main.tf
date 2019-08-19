@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "us-west-1"
+  region  = "us-west-2"
   profile = "gfg"
 }
 
@@ -8,6 +8,8 @@ provider "aws" {
 #####
 module "vpc" {
   source = "./modules/vpc"
+  AZ_1   = "us-west-2a"
+  AZ_2   = "us-west-2b"
 
 }
 module "postgres" {
@@ -22,17 +24,18 @@ module "postgres" {
   DB_SUBNET_ID      = "${module.vpc.default_subnet_group_id}"
 }
 module "ec2" {
-  source        = "./modules/ec2/"
-  INSTANCE_TYPE = "t2.micro"
-  KEY_NAME      = "aws"
-  VOLUME_SIZE   = "16"
-  EC2_SUBNET    = "${module.vpc.subnet1_id}"
-  EC2_SG        = "${module.vpc.sg_ec2_id}"
-  ALLOW_EC2_ROLE_NAME  = "${module.secret.allow_ec2_role_name}"
+  source              = "./modules/ec2/"
+  INSTANCE_TYPE       = "t2.micro"
+  KEY_NAME            = "aws2"
+  VOLUME_SIZE         = "16"
+  EC2_SUBNET          = "${module.vpc.subnet1_id}"
+  EC2_SG              = "${module.vpc.sg_ec2_id}"
+  ALLOW_EC2_ROLE_NAME = "${module.secret.allow_ec2_role_name}"
 
 }
 
 module "secret" {
-  source = "./modules/secrets/"
-  DB_PASSWORD = "${module.postgres.db_password}"
+  source         = "./modules/secrets/"
+  DB_PASSWORD    = "${module.postgres.db_password}"
+  KMS_ALIAS_NAME = "alias/rds-key-alias"
 }

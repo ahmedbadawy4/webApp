@@ -7,5 +7,5 @@ output "db_instance_address" {
 }
 
 output "db_password" {
-	value = "${var.DB_PASSWORD}"
+  value = "${var.DB_PASSWORD}"
 }
