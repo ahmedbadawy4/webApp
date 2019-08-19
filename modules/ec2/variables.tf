@@ -19,7 +19,7 @@ variable "EC2_SG" {
   description = "security group ID come from vpc module"
 }
 
-variable "ALLOW_EC2_ROLE_NAME" {
+variable "EC2ROLE_NAME" {
   description = "allow ec2 role name"
 }
 

@@ -54,8 +54,8 @@ resource "aws_iam_policy" "kmsEncryptDecrept" {
 EOF
 }
 
-resource "aws_iam_role" "allow_ec2_role" {
-  name               = "AllowEc2Role"
+resource "aws_iam_role" "rds" {
+  name               = "ec2role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

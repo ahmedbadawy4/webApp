@@ -30,7 +30,7 @@ module "ec2" {
   VOLUME_SIZE         = "16"
   EC2_SUBNET          = "${module.vpc.subnet1_id}"
   EC2_SG              = "${module.vpc.sg_ec2_id}"
-  ALLOW_EC2_ROLE_NAME = "${module.secret.allow_ec2_role_name}"
+  EC2ROLE_NAME        = "${module.secrets.ec2role_name}"
 
 }
 
