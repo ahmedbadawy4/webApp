@@ -1,9 +1,9 @@
-resource "aws_kms_key" "rds_kms" {
-  description         = "KMS key to encyrept rds master password"
+resource "aws_kms_key" "gfg_kms" {
+  description = "KMS key to encyrept rds master password"
 }
-resource "aws_kms_alias" "rds_alias_kms" {
+resource "aws_kms_alias" "gfg_alias_kms" {
   name          = "${var.KMS_ALIAS_NAME}"
-  target_key_id = "${aws_kms_key.rds_kms.key_id}"
+  target_key_id = "${aws_kms_key.gfg_kms.key_id}"
 }
 
 resource "aws_ssm_parameter" "pg_password" {
@@ -11,7 +11,7 @@ resource "aws_ssm_parameter" "pg_password" {
   description = "adding postgress password in parameter store"
   type        = "SecureString"
   value       = "${var.DB_PASSWORD}"
-  key_id      = "${aws_kms_key.rds_kms.key_id}"
+  key_id      = "${aws_kms_key.gfg_kms.key_id}"
 }
 
 
@@ -48,7 +48,7 @@ resource "aws_iam_policy" "kmsEncryptDecrept" {
         "kms:Encrypt"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_kms_key.rds_kms.arn}"
+      "Resource": "${aws_kms_key.gfg_kms.arn}"
     }
   ]}
 EOF
@@ -74,11 +74,11 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "policy1Attachment" {
-  role       = "${aws_iam_role.allow_ec2_role.name}"
+  role       = "${aws_iam_role.rds.name}"
   policy_arn = "${aws_iam_policy.SSMRead.arn}"
 }
 resource "aws_iam_role_policy_attachment" "policy2Attachment" {
-  role       = "${aws_iam_role.allow_ec2_role.name}"
+  role       = "${aws_iam_role.rds.name}"
   policy_arn = "${aws_iam_policy.kmsEncryptDecrept.arn}"
 }
 
