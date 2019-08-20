@@ -12,8 +12,8 @@ module "vpc" {
   AZ_2   = "us-east-1b"
 
 }
-module "postgres" {
-  source            = "./modules/postgres"
+module "rds" {
+  source            = "./modules/rds"
   IDENTIFIER        = "gfg-rds"
   ALLOCATED_STORAGE = "16"
   ENGINE            = "postgres"
