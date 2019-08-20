@@ -30,13 +30,12 @@ module "ec2" {
   VOLUME_SIZE   = "16"
   EC2_SUBNET    = "${module.vpc.subnet1_id}"
   EC2_SG        = "${module.vpc.sg_ec2_id}"
-  #  EC2_SG       = "sg-055b1d780eccffea2"
   EC2ROLE_NAME = "${module.secrets.ec2role_name}"
 
 }
 
 module "secrets" {
   source         = "./modules/secrets/"
-  DB_PASSWORD    = "${module.postgres.db_password}"
+  DB_PASSWORD    = "${module.rds.db_password}"
   KMS_ALIAS_NAME = "alias/rds-key-alias"
 }

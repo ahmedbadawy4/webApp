@@ -18,6 +18,11 @@ resource "aws_instance" "amazone_ec2" {
   subnet_id              = "${var.EC2_SUBNET}"
   vpc_security_group_ids = ["${var.EC2_SG}"]
   iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum update
+              sudo yum install postgresql
+              EOF
   root_block_device {
     volume_size           = "${var.VOLUME_SIZE}"
     delete_on_termination = "true"
