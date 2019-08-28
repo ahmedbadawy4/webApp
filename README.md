@@ -46,8 +46,8 @@
 7- get ec2 public ip from the outputs
  
 ```
-terraform output Ec2_public_ip # to get Ec2 public IP
-
+terraform output Ec2_public_ip    # to get Ec2 public IP
+terraform output db_host          # to et Ec2 Host
 ```
 
 7- Get the master database password 
