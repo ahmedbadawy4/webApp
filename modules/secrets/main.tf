@@ -1,6 +1,7 @@
 resource "aws_kms_key" "gfg_kms" {
   description = "KMS key to encyrept rds master password"
 }
+
 resource "aws_kms_alias" "gfg_alias_kms" {
   name          = "${var.KMS_ALIAS_NAME}"
   target_key_id = "${aws_kms_key.gfg_kms.key_id}"
@@ -13,7 +14,6 @@ resource "aws_ssm_parameter" "pg_password" {
   value       = "${var.DB_PASSWORD}"
   key_id      = "${aws_kms_key.gfg_kms.key_id}"
 }
-
 
 resource "aws_iam_policy" "SSMRead" {
   name        = "ssmReadOnly"
@@ -77,8 +77,14 @@ resource "aws_iam_role_policy_attachment" "policy1Attachment" {
   role       = "${aws_iam_role.rds.name}"
   policy_arn = "${aws_iam_policy.SSMRead.arn}"
 }
+
 resource "aws_iam_role_policy_attachment" "policy2Attachment" {
   role       = "${aws_iam_role.rds.name}"
   policy_arn = "${aws_iam_policy.kmsEncryptDecrept.arn}"
+}
+
+resource "random_password" "pg" {
+  length  = "8"
+  special = false
 }
 

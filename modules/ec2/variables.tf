@@ -22,4 +22,3 @@ variable "EC2_SG" {
 variable "EC2ROLE_NAME" {
   description = "allow ec2 role name"
 }
-

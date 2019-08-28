@@ -13,7 +13,6 @@ variable "SUBNET_2_CIDR" {
   description = "subnet for the second Availability Zone"
 }
 
-
 variable "AZ_1" {
   default     = "us-west-1b"
   description = "first Availability Zone"
@@ -23,4 +22,3 @@ variable "AZ_2" {
   default     = "us-west-1a"
   description = "second Availability Zone"
 }
-
