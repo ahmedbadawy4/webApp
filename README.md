@@ -1,4 +1,4 @@
-# Terraform Exercise 
+# Terraform Provisioning of basic and simple webapp
 
 
 ### Hello world App with Ec2 and PostgreSQL on AWS
