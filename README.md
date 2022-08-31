@@ -71,3 +71,5 @@ psql --host=<databasehost> --port=5432 --username=<database_user> --password --d
 
 ## TO Do List:
 add an application on our Ec2 to can retrieve and write data to or from our database.
+
+whitespace
